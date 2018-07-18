@@ -52,6 +52,10 @@ namespace trim_image {
 	private: System::Windows::Forms::Button^  button6;
 	private: System::Windows::Forms::Button^  button7;
 	private: System::Windows::Forms::Button^  button8;
+	private: System::Windows::Forms::Button^  buttonSave;
+	private: System::Windows::Forms::TextBox^  textBox1;
+	private: System::Windows::Forms::NumericUpDown^  numericUpDown1;
+	private: System::Windows::Forms::TextBox^  textBox2;
 
 	private:
 		/// <summary>
@@ -75,7 +79,12 @@ namespace trim_image {
 			this->button6 = (gcnew System::Windows::Forms::Button());
 			this->button7 = (gcnew System::Windows::Forms::Button());
 			this->button8 = (gcnew System::Windows::Forms::Button());
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->pictureBox1))->BeginInit();
+			this->buttonSave = (gcnew System::Windows::Forms::Button());
+			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
+			this->numericUpDown1 = (gcnew System::Windows::Forms::NumericUpDown());
+			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDown1))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// pictureBox1
@@ -91,7 +100,7 @@ namespace trim_image {
 			// 
 			// button1
 			// 
-			this->button1->Location = System::Drawing::Point(12, 462);
+			this->button1->Location = System::Drawing::Point(12, 458);
 			this->button1->Name = L"button1";
 			this->button1->Size = System::Drawing::Size(240, 36);
 			this->button1->TabIndex = 1;
@@ -161,7 +170,7 @@ namespace trim_image {
 			// 
 			// button8
 			// 
-			this->button8->Location = System::Drawing::Point(294, 462);
+			this->button8->Location = System::Drawing::Point(294, 458);
 			this->button8->Name = L"button8";
 			this->button8->Size = System::Drawing::Size(242, 36);
 			this->button8->TabIndex = 8;
@@ -169,11 +178,51 @@ namespace trim_image {
 			this->button8->UseVisualStyleBackColor = true;
 			this->button8->Click += gcnew System::EventHandler(this, &Form1::button8_Click);
 			// 
+			// buttonSave
+			// 
+			this->buttonSave->Location = System::Drawing::Point(12, 500);
+			this->buttonSave->Name = L"buttonSave";
+			this->buttonSave->Size = System::Drawing::Size(96, 36);
+			this->buttonSave->TabIndex = 9;
+			this->buttonSave->Text = L"Save";
+			this->buttonSave->UseVisualStyleBackColor = true;
+			this->buttonSave->Click += gcnew System::EventHandler(this, &Form1::buttonSave_Click);
+			// 
+			// textBox1
+			// 
+			this->textBox1->Location = System::Drawing::Point(114, 507);
+			this->textBox1->Name = L"textBox1";
+			this->textBox1->Size = System::Drawing::Size(301, 19);
+			this->textBox1->TabIndex = 10;
+			this->textBox1->Text = L"trimmed_image_";
+			// 
+			// numericUpDown1
+			// 
+			this->numericUpDown1->Location = System::Drawing::Point(421, 506);
+			this->numericUpDown1->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { -1530494976, 232830, 0, 0 });
+			this->numericUpDown1->Name = L"numericUpDown1";
+			this->numericUpDown1->Size = System::Drawing::Size(69, 19);
+			this->numericUpDown1->TabIndex = 11;
+			this->numericUpDown1->TextAlign = System::Windows::Forms::HorizontalAlignment::Right;
+			// 
+			// textBox2
+			// 
+			this->textBox2->Location = System::Drawing::Point(496, 506);
+			this->textBox2->Name = L"textBox2";
+			this->textBox2->Size = System::Drawing::Size(40, 19);
+			this->textBox2->TabIndex = 12;
+			this->textBox2->Text = L"png";
+			this->textBox2->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
+			// 
 			// Form1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(548, 510);
+			this->ClientSize = System::Drawing::Size(548, 545);
+			this->Controls->Add(this->textBox2);
+			this->Controls->Add(this->numericUpDown1);
+			this->Controls->Add(this->textBox1);
+			this->Controls->Add(this->buttonSave);
 			this->Controls->Add(this->button8);
 			this->Controls->Add(this->button7);
 			this->Controls->Add(this->button6);
@@ -185,8 +234,11 @@ namespace trim_image {
 			this->Controls->Add(this->pictureBox1);
 			this->Name = L"Form1";
 			this->Text = L"Trim image";
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->pictureBox1))->EndInit();
+			this->Load += gcnew System::EventHandler(this, &Form1::Form1_Load);
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDown1))->EndInit();
 			this->ResumeLayout(false);
+			this->PerformLayout();
 
 		}
 #pragma endregion
@@ -208,9 +260,14 @@ namespace trim_image {
 			 }
 	private: System::Void button3_Click(System::Object^  sender, System::EventArgs^  e) {
 				 Clipboard^ theBoard;
-				 theBoard->SetImage(pictureBox1->Image);
+				 if (nullptr != pictureBox1->Image){
+					 theBoard->SetImage(pictureBox1->Image);
+				 }
 			 }
 	private: System::Void button4_Click(System::Object^  sender, System::EventArgs^  e) {
+				 if (nullptr == pictureBox1->Image){
+					 return;
+				 }
 				 Bitmap^ theBitmap = gcnew Bitmap(pictureBox1->Image);
 				 int x, top;
 				 int hei = theBitmap->Height;
@@ -231,6 +288,9 @@ namespace trim_image {
 				 delete theBitmap;
 			 }
 	private: System::Void button5_Click(System::Object^  sender, System::EventArgs^  e) {
+				 if (nullptr == pictureBox1->Image){
+					 return;
+				 }
 				 Bitmap^ theBitmap = gcnew Bitmap(pictureBox1->Image);
 				 int x, new_hei;
 				 int hei = theBitmap->Height;
@@ -253,6 +313,9 @@ namespace trim_image {
 				 delete theBitmap;
 			 }
 	private: System::Void button6_Click(System::Object^  sender, System::EventArgs^  e) {
+				 if (nullptr == pictureBox1->Image){
+					 return;
+				 }
 				 Bitmap^ theBitmap = gcnew Bitmap(pictureBox1->Image);
 				 int left, y;
 				 int hei = theBitmap->Height;
@@ -274,6 +337,9 @@ namespace trim_image {
 				 delete theBitmap;
 			 }
 	private: System::Void button7_Click(System::Object^  sender, System::EventArgs^  e) {
+				 if (nullptr == pictureBox1->Image){
+					 return;
+				 }
 				 Bitmap^ theBitmap = gcnew Bitmap(pictureBox1->Image);
 				 int new_wid, y;
 				 int hei = theBitmap->Height;
@@ -303,6 +369,7 @@ namespace trim_image {
 				 int y = e->Y * hei / pictureBox1->Size.Height;
 
 				 backColor = theBitmap->GetPixel(x, y);
+				 this->Text = "Trim image BG = (" + backColor.R.ToString() + ", " + backColor.G.ToString() + ", " + backColor.B.ToString() + ")";
 
 				 // Ø‚è”²‚«
 				 if(System::Windows::Forms::MouseButtons::Left == e->Button){
@@ -318,6 +385,33 @@ namespace trim_image {
 				 button6_Click(sender, e);
 				 button7_Click(sender, e);
 			 }
+	private: System::Void Form1_Load(System::Object^  sender, System::EventArgs^  e) {
+				 this->Text = "Trim image (" + backColor.R.ToString() + ", " + backColor.G.ToString() + ", " + backColor.B.ToString() + ")";
+				 pictureBox1->Anchor = AnchorStyles::Top + AnchorStyles::Left + AnchorStyles::Right + AnchorStyles::Bottom;
+				 button1->Anchor = AnchorStyles::Bottom;
+				 button2->Anchor = AnchorStyles::Bottom;
+				 button3->Anchor = AnchorStyles::Bottom;
+				 button4->Anchor = AnchorStyles::Bottom;
+				 button5->Anchor = AnchorStyles::Bottom;
+				 button6->Anchor = AnchorStyles::Bottom;
+				 button7->Anchor = AnchorStyles::Bottom;
+				 button8->Anchor = AnchorStyles::Bottom;
+				 buttonSave->Anchor = AnchorStyles::Bottom;
+				 textBox1->Anchor = AnchorStyles::Bottom;
+				 textBox2->Anchor = AnchorStyles::Bottom;
+				 numericUpDown1->Anchor = AnchorStyles::Bottom;
+	}
+	private: System::Void buttonSave_Click(System::Object^  sender, System::EventArgs^  e) {
+				 String^ name = textBox1->Text + numericUpDown1->Value.ToString() + "." + textBox2->Text;
+				 while (System::IO::File::Exists(name)){
+					 numericUpDown1->Value++;
+					 name = textBox1->Text + numericUpDown1->Value.ToString() + "." + textBox2->Text;
+				 }
+				 if (nullptr != pictureBox1->Image){
+					 pictureBox1->Image->Save(name/*, System::Drawing::Imaging::ImageFormat::Png*/);
+					 numericUpDown1->Value++;
+				 }
+	}
 };
 }
 
